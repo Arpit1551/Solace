@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solace</title>
+  <link rel="icon" href="Screenshot 2025-02-12 022031.png" type="image/x-icon">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  
+  <header>
+    <div class="container">
+
+      <div class="logo"><img src="Screenshot 2025-02-12 022031.png"> Solace</div>
+      <nav>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#">Articles</a></li>
+        </ul>
+      </nav>
+      <a href="#" class="cta-button">Log In</a>
+    </div>
+  </header>
+
+ <div class="main">
+  <div>
+  <aside class="sidebar">
+    <div class="profile-card">
+        <h1>Profile<a href="#"><span>Edit ✎</span></a></h1>
+        <div class="profile-pic"><img src="hi.jpg"></div>
+
+       <h2>Jatin Yadav</h2>
+       <div class="bio">
+        <p>Gender: <span>Male</span></p>
+        <p>Age: <span>21</span></p>
+        <p>Mobile no.: <span>1234567890</span></p>
+        <p>Email: <span>Jatin@gmail.com</span></p>
+        <p>Address: <span> India</span></p>
+        </div>
+        
+    </div>
+
+    
+</aside>
+
+    <div class="history">
+        <h2>Recent Searches.</h2>
+      <div class="searches">
+       <h4>Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio, dolores.</h4><hr>
+       <h4>qwert</h4><hr>
+       <h4>qwert</h4><hr>
+       <h4>qwert</h4><hr>
+       <h4>qwert</h4><hr>
+       <h4>qwert</h4><hr>
+       <h4>qwert</h4><hr>
+       
+      </div>
+    </div>
+</div>
+<div class="dashboard">
+  <header>
+      <h1>Welcome to Your Mental Health Dashboard</h1>
+  </header>
+  <section class="mood-tracker">
+    <div class="tracker">
+      <div class="mood">
+      <h2>Mood Tracker</h2>
+      <select id="mood">
+          <option value="happy">Happy</option>
+          <option value="neutral">Neutral</option>
+          <option value="sad">Sad</option>
+          <option value="stressed">Stressed</option>
+      </select>
+      <button id="logMoodBtn">Log Today's Mood</button>
+      <ul id="mood-log"></ul>
+   </div>
+  <div class="feeling-tracker">
+      <h2>How You Feeling Today</h2>
+      <input type="text" id="feeling-input" placeholder="Describe your feeling today">
+      <button id="addFeelingBtn">Submit</button>
+      <ul id="feeling-list"></ul>
+  </div>
+</div>
+ </section>
+  <section class="mood-graph">
+      <h2>Mood Graph (Last 7 Days)</h2>
+      <canvas id="moodChart"></canvas>
+  </section>
+ 
+  <section class="resources">
+      <h2>Resources</h2>
+      <ul>
+          <li><a href="games.html">Mindfulness Exercises</a></li>
+          <li><a href="breath.html">Breathing Exercise</a></li>
+          <li><a href="sleep.html">Sleep Improvement Tips</a></li>
+      </ul>
+  </section>
+ 
+</div>
+</div>
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="#about">About Us</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="social-media">
+        <a href="#">Facebook</a>
+        <a href="#">Twitter</a>
+        <a href="#">LinkedIn</a>
+      </div>
+      
+      <p class="legal">&copy; 2025 Solace. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const moodData = [];
+const feelingData = [];
+let moodChart;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('moodChart').getContext('2d');
+    moodChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Mood Levels',
+                data: [],
+                borderColor: '#1976d2',
+                backgroundColor: 'rgba(25, 118, 210, 0.2)',
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, max: 4 }
+            }
+        }
+    });
+});
+
+document.getElementById('logMoodBtn').addEventListener('click', function() {
+    const today = new Date().toISOString().split('T')[0];
+    const mood = document.getElementById('mood').value;
+    const existingEntryIndex = moodData.findIndex(entry => entry.date === today);
+
+    if (existingEntryIndex !== -1) {
+        moodData[existingEntryIndex].mood = mood;
+    } else {
+        moodData.push({ date: today, mood });
+    }
+
+    renderMoodLog();
+    updateMoodGraph();
+});
+
+document.getElementById('addFeelingBtn').addEventListener('click', function() {
+    const today = new Date().toISOString().split('T')[0];
+    const feeling = document.getElementById('feeling-input').value.trim();
+
+    if (!feeling) return;
+
+    const existingEntryIndex = feelingData.findIndex(entry => entry.date === today);
+
+    if (existingEntryIndex !== -1) {
+        feelingData[existingEntryIndex].feeling = feeling;
+    } else {
+        feelingData.push({ date: today, feeling });
+    }
+
+    renderFeelingLog();
+});
+
+function convertMoodToValue(mood) {
+    const moodValues = { happy: 4, neutral: 3, sad: 2, stressed: 1 };
+    return moodValues[mood] || 0;
+}
+
+function renderMoodLog() {
+    const log = document.getElementById('mood-log');
+    log.innerHTML = '';
+    moodData.slice(-7).forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = `Mood on ${entry.date}: ${entry.mood}`;
+        log.appendChild(li);
+    });
+}
+
+function renderFeelingLog() {
+    const log = document.getElementById('feeling-list');
+    log.innerHTML = '';
+    feelingData.slice(-7).forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = `Feeling on ${entry.date}: ${entry.feeling}`;
+        log.appendChild(li);
+    });
+}
+
+function updateMoodGraph() {
+    const last7Days = moodData.slice(-7);
+    moodChart.data.labels = last7Days.map(item => item.date);
+    moodChart.data.datasets[0].data = last7Days.map(item => convertMoodToValue(item.mood));
+    moodChart.update();
+}
+  </script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container{
+            padding: 32px 0 60px;
+            border: 2px solid blue;
+        }
+
+        .container .chats-container{
+            display: flex;
+            gap: 20px;
+            flex-direction: column;
+        }
+
+        .container :where(.app-header, .suggestions, .promt-wrapper, .message){
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 20px;
+            max-width: 980px;
+        }
+
+        .container .app-header{
+            margin-top: 4vh;
+        }
+
+        .app-header .heading{
+            font-size: 3rem;
+            width: fit-content;
+            background: linear-gradient(to right, #1d7efd, #8f6fff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .app-header .sub-heading{
+            font-size: 2.6rem;
+            margin-top: -5px;
+            /* color: white; */
+        }
+
+        .suggestions .suggestions-item{
+            width: 228px;
+            padding: 18px;
+            flex-shrink: 0;
+            display: flex;
+            cursor: pointer;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-between;
+            border-radius: 12px;
+            background: rgb(73, 73, 243);
+        }
+
+        .container .suggestions{
+            display: flex;
+            gap: 15px;
+            margin-top: 9.5ch;
+            list-style: none;
+            overflow-x: auto;
+        }
+
+        .suggestions .suggestions-item .text{
+            font-size: 1.1rem;
+        }
+
+        .chats-container .message{
+            display: flex;
+            gap: 11px;
+            align-items: center;
+        }
+
+        .chats-container .bot-message .avatar{
+            height: 43px;
+            width: 43px;
+            flex-shrink: 0;
+            padding: 6px;
+            align-self: flex-start;
+            margin-right: -7px;
+            border-radius: 50%;
+            background: rgb(210, 192, 192);
+            
+        }
+
+        .chats-container .message .message-text{
+            padding: 3px 16px;
+            word-wrap: break-word;
+            white-space: pre-line;
+        }
+
+        .chats-container .user-message{
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        .chats-container .user-message{
+            margin: 9px auto;
+
+        }
+
+        .chats-container .user-message .message-text{
+            padding: 12px 16px;
+            max-width: 75%;
+            border-radius: 13px;
+
+        }
+
+        .container .prompt-container .promt-wrapper .promt-form{
+            margin-top: 20px;
+        }
+
+        .container .prompt-container .promt-wrapper .promt-form .promt-input{
+            width: 50vw;
+            height: 4.5vh;
+            border-radius: 50px;
+            padding: 5px 15px;
+        }
+
+        .container .prompt-container .promt-wrapper .promt-form .promt-button{
+            width: 5vw;
+            cursor: pointer;
+            height: 4.5vh;
+            border-radius: 50px;
+            padding: 5px 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1 class="heading">Hello, there</h1>
+            <h1 class="sub-heading">How can I help you?</h1>
+        </header>
+
+        <!-- <ul class="suggestions">
+    
+            <li class="suggestions-item">
+                <p class="text">
+                    Design a home office setup for remote work under $500.
+                </p>
+                <p class="text">
+                    Design a home office setup for remote work under $500.
+                </p>
+                <p class="text">
+                    Design a home office setup for remote work under $500.
+                </p>
+                <p class="text">
+                    Design a home office setup for remote work under $500.
+                </p>
+                <p class="text">
+                    Design a home office setup for remote work under $500.
+                </p>
+            </li>
+        </ul> -->
+
+        <div class="chats-container">
+            <div class="message user-message">
+                <p class="message-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, exercitationem.</p>
+            </div>
+            <div class="message bot-message">
+                <img class="avatar" src="hi.jpg" alt="avatar">
+                <p class="message-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, exercitationem.</p>
+            </div>
+        </div>
+
+        <div class="prompt-container">
+            <div class="promt-wrapper">
+                <form action="#" class="promt-form">
+                    <input type="text" class="promt-input" placeholder="Type a message..." required>
+                    <button type="submit" class="promt-button">Send</button> 
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatsContainer = document.querySelector(".chats-container");
+        const promtForm = document.querySelector(".promt-form");
+        const promtInput = promtForm.querySelector(".promt-input");
+
+        const GOOGLE_API_KEY = 'AIzaSyDudnt6l_RVPTuwnnj0VqrtLq8WVDewrMY';
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`;
+
+        let userMessage = "";
+        const chatHistory = [];
+        const createMsgElement = (content , ...classes) =>{
+            const div = document.createElement("div");
+            div.classList.add("message", ...classes);
+            div.innerHTML = content;
+            return div;
+        }
+
+        const generateResponse = async (botMsgDiv) =>{
+
+            const textElement = botMsgDiv.querySelector(".message-text");
+
+            chatHistory.push({
+                role:"user",
+                parts:[{text:userMessage}]
+            });
+
+            try {
+                const response = await fetch(API_URL,{
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({contents: chatHistory})
+                });
+
+                const data = await response.json();
+                if(!response.ok) throw new Error(data.error.message);
+                
+                const responseText = data.candidates[0].content.parts[0].text.replace(/<[^>]*>/g, "$1").trim();
+                textElement.textContent = responseText;
+
+
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        const handleFormSubmit = (e) =>{
+            e.preventDefault();
+            userMessage = promtInput.value.trim();
+            if(!userMessage) return;
+
+            promtInput.value = "";
+
+            const userMsgHTML = `<p class = "message-text"></p>`;
+            const userMsgDiv = createMsgElement(userMsgHTML, "user-message");
+            userMsgDiv.querySelector(".message-text").textContent = userMessage;
+            chatsContainer.appendChild(userMsgDiv);
+
+            setTimeout(()=>{
+                const botMsgHTML = `<img class="avatar" src="hi.jpg" alt="avatar">
+                <p class="message-text">Just a sec...</p>`;
+                const botMsgDiv = createMsgElement(botMsgHTML, "bot-message" );
+                chatsContainer.appendChild(botMsgDiv);
+                generateResponse(botMsgDiv);
+        },600);
+    }
+
+        promtForm.addEventListener("submit",handleFormSubmit);
+    </script>
+</body>
+</html>

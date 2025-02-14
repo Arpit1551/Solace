@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solace</title>
+  <link rel="icon" type="image/x-icon" href="Screenshot 2025-02-12 022031.png">
+  <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="Screenshot 2025-02-12 022031.png" alt="logo" class="logo">
+    </div>
+    <h1>Already on Solace</h1>
+    <form class="login-form">
+      <input type="email" placeholder="Email or phone number" class="input-field" required>
+      <div class="password-field">
+        <input type="password" placeholder="Password" class="input-field" id="password" required>
+        <button type="button" onclick="show()" class="show-btn">&#128065;</button>
+      </div>
+      
+      
+      <button type="submit" class="agree-btn">Sign In</button>
+      <p style="font-size: 25px;font-weight: 500; margin-top: -5px;">or</p>
+      
+      <a href="#" class="cont">
+        <button class="google-signin">
+         <img src="download17.png" alt="Google Logo">Continue with google
+    </button></a>
+      
+    </form>
+    <p class="sign-in">New on Solace? <a href="/register">Sign Up</a></p>
+  </div>
+  
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="#">About</a>
+      <a href="#">Accessibility</a>
+      <a href="#">User Agreement</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Cookie Policy</a>
+      <a href="#">Copyright Policy</a>
+      <a href="#">Brand Policy</a>
+      <a href="#">Guest Controls</a>
+      <a href="#">Community Guidelines</a>
+    </div>
+    <p class="footer-copyright">Solace © 2025</p>
+  </footer>
+  <script>
+  function show() {
+    const passwordField = document.getElementById("password");
+    if (passwordField.type === "password") {
+      passwordField.type = "text";
+    } else {
+      passwordField.type = "password";
+    }
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Loading Page</title>
+    <link rel="icon" type="image/x-icon" href="images/logo.png">
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+<body>
+    <div class="loading-container">
+        <img src="Screenshot 2025-02-12 022031.png" >
+        <div class="progress-bar">
+            <div class="progress-bar-inner" id="progress"></div>
+        </div>
+    </div>
+
+    <script>
+        let progress = document.getElementById('progress');
+        let width = 0;
+
+        function updateProgress() {
+            if (width >= 100) {
+                width = 0; 
+                window.location.href = 'Solance'; 
+                }
+             else {
+                width += 4; 
+            }
+            progress.style.width = width + '%';
+        }
+
+        setInterval(updateProgress, 80); 
+    </script>
+
+</body>
+</html>
